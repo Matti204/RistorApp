@@ -24,3 +24,16 @@ class RegistrationForm(BootstrapFieldsMixin, UserCreationForm):
         if User.objects.filter(email__iexact=email).exists():
             raise forms.ValidationError("Questa email ? gi? registrata.")
         return email
+
+
+from .models import Dish
+
+class DishForm(BootstrapFieldsMixin, forms.ModelForm):
+    class Meta:
+        model = Dish
+        fields = ("name", "description", "ingredients", "allergens", "price")
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 2}),
+            "ingredients": forms.Textarea(attrs={"rows": 3}),
+            "allergens": forms.Textarea(attrs={"rows": 2}),
+        }

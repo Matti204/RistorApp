@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from django.core.validators import MinValueValidator
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -35,3 +36,18 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         self.email = self.email.strip().lower()
         super().save(*args, **kwargs)
+
+
+class Dish(models.Model):
+    owner = models.ForeignKey("accounts.User", on_delete=models.CASCADE, related_name="dishes")
+    name = models.CharField("Nome", max_length=150)
+    description = models.TextField("Descrizione", blank=True)
+    ingredients = models.TextField("Ingredienti")
+    allergens = models.TextField("Allergeni", blank=True)
+    price = models.DecimalField("Prezzo (?)", max_digits=8, decimal_places=2, null=True, blank=True, validators=[MinValueValidator(0)])
+
+    class Meta:
+        ordering = ["name", "pk"]
+
+    def __str__(self):
+        return self.name
